@@ -248,6 +248,20 @@ tbody.addEventListener('click', async (e) => {
     return;
   }
 
+  await logAdminAction({
+  actionType: 'delete_attendance',
+  targetId: record.id,
+  studentName: record.student_name,
+  eventId: selected?.id || null,
+  oldData: {
+    student_name: record.student_name,
+    batch_intake: record.batch_intake,
+    team_name: record.team_name,
+    checked_in_at: record.checked_in_at
+  },
+  newData: null
+});
+
   rows = rows.filter(r => String(r.id) !== String(record.id));
 
   renderRows();
@@ -323,6 +337,27 @@ $('attendanceEditForm').addEventListener('submit', async (e) => {
     return;
   }
 
+  await logAdminAction({
+  actionType: 'edit_attendance',
+  targetId: editingAttendance.id,
+  studentName: name,
+  eventId: selected?.id || null,
+
+  oldData: {
+    student_name: editingAttendance.student_name,
+    batch_intake: editingAttendance.batch_intake,
+    team_name: editingAttendance.team_name,
+    checked_in_at: editingAttendance.checked_in_at
+  },
+
+  newData: {
+    student_name: name,
+    batch_intake: batch,
+    team_name: team,
+    checked_in_at: editingAttendance.checked_in_at
+  }
+});
+  
   const updatedName = name;
 
   editingAttendance = null;
@@ -419,6 +454,25 @@ $('deleteEventButton').addEventListener('click', async () => {
     return;
   }
 
+  await logAdminAction({
+  actionType: 'delete_event',
+  targetId: selected.id,
+  studentName: null,
+  eventId: selected.id,
+
+  oldData: {
+    id: selected.id,
+    name: selected.name,
+    type: selected.type,
+    event_date: selected.event_date,
+    opens_at: selected.opens_at,
+    closes_at: selected.closes_at,
+    slug: selected.slug
+  },
+
+  newData: null
+});
+
   selected = null;
   rows = [];
 
@@ -478,6 +532,25 @@ $('eventForm').addEventListener('submit', async e => {
     msg(error.message, 'error');
     return;
   }
+
+  await logAdminAction({
+  actionType: 'create_event',
+  targetId: data.id,
+  studentName: null,
+  eventId: data.id,
+
+  oldData: null,
+
+  newData: {
+    id: data.id,
+    name: data.name,
+    type: data.type,
+    event_date: data.event_date,
+    opens_at: data.opens_at,
+    closes_at: data.closes_at,
+    slug: data.slug
+  }
+});
 
   msg('Event created. Its unique QR is ready.', 'success');
 
