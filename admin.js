@@ -223,6 +223,33 @@ tbody.addEventListener('click', async (e) => {
   );
 });
 
+tbody.addEventListener('click', (e) => {
+  const editButton = e.target.closest('.table-edit-btn');
+
+  if (!editButton) return;
+
+  const id = editButton.dataset.id;
+  const record = rows.find(r => String(r.id) === String(id));
+
+  if (!record) {
+    msg('Attendance record not found.', 'error');
+    return;
+  }
+
+  editingAttendance = record;
+
+  $('editAttendanceName').value = record.student_name || '';
+  $('editAttendanceBatch').value = record.batch_intake || '';
+  $('editAttendanceTeam').value = record.team_name || '';
+
+  $('attendanceEditSection').hidden = false;
+
+  $('attendanceEditSection').scrollIntoView({
+    behavior: 'smooth',
+    block: 'center'
+  });
+});
+
 function renderQR() {
   const holder = $('qrCode');
 
