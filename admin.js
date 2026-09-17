@@ -191,6 +191,47 @@ function renderQR() {
     selected.is_open ? 'Close Check-In' : 'Open Check-In';
 }
 
+$('deleteEventButton').addEventListener('click', async () => {
+  if (!selected) return;
+
+  const eventName = selected.name;
+  const attendanceCount = rows.length;
+
+  const confirmed = confirm(
+    `Delete "${eventName}"?\n\n` +
+    `This will permanently delete this event and ${attendanceCount} attendance record(s).\n\n` +
+    `This action cannot be undone.`
+  );
+
+  if (!confirmed) return;
+
+  const secondConfirmed = confirm(
+    `FINAL CONFIRMATION\n\n` +
+    `Are you sure you want to permanently delete "${eventName}"?`
+  );
+
+  if (!secondConfirmed) return;
+
+  msg('Deleting event…', 'info');
+
+  const { error } = await supabase
+    .from('events')
+    .delete()
+    .eq('id', selected.id);
+
+  if (error) {
+    msg(`Delete failed: ${error.message}`, 'error');
+    return;
+  }
+
+  selected = null;
+  rows = [];
+
+  msg(`Event deleted successfully: ${eventName}`, 'success');
+
+  await loadAll();
+});
+
 
 /* =========================
    CREATE EVENT
