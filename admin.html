@@ -325,7 +325,53 @@
 
   </div>
 
+<section id="editAttendanceSection" class="admin-section" hidden>
+  <p class="eyebrow">EDIT ATTENDANCE</p>
+  <h2>Edit Attendance Record</h2>
 
+  <form id="editAttendanceForm" class="event-form">
+
+    <label>
+      <span>Student Name</span>
+      <input
+        id="editStudentName"
+        type="text"
+        required
+        maxlength="120">
+    </label>
+
+    <label>
+      <span>Batch / Intake</span>
+      <input
+        id="editBatchIntake"
+        type="text"
+        required
+        maxlength="120">
+    </label>
+
+    <label class="wide">
+      <span>Team Name</span>
+      <input
+        id="editTeamName"
+        type="text"
+        maxlength="120">
+    </label>
+
+    <button
+      type="submit"
+      class="primary-btn small wide">
+      Save Attendance Changes
+    </button>
+
+    <button
+      id="cancelAttendanceEdit"
+      type="button"
+      class="secondary-btn full wide">
+      Cancel
+    </button>
+
+  </form>
+</section>
   <div class="table-wrap">
 
     <table>
