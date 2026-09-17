@@ -136,20 +136,42 @@ function renderRows() {
   $('totalCount').textContent = rows.length;
 
   tbody.innerHTML = f.length
-    ? f
-        .map(
-          (r, i) => `
-            <tr>
-              <td>${i + 1}</td>
-              <td>${esc(r.student_name)}</td>
-              <td>${esc(r.batch_intake)}</td>
-              <td>${esc(r.team_name || '—')}</td>
-              <td>${new Date(r.checked_in_at).toLocaleString()}</td>
-            </tr>
-          `
-        )
-        .join('')
-    : '<tr class="empty-row"><td colspan="5">No attendance records found.</td></tr>';
+    ? f.map((r, i) => `
+        <tr>
+          <td>${i + 1}</td>
+
+          <td>${esc(r.student_name)}</td>
+
+          <td>${esc(r.batch_intake)}</td>
+
+          <td>${esc(r.team_name || '—')}</td>
+
+          <td>${new Date(r.checked_in_at).toLocaleString()}</td>
+
+          <td>
+            <div class="row-actions">
+              <button
+                type="button"
+                class="table-edit-btn"
+                data-id="${r.id}">
+                Edit
+              </button>
+
+              <button
+                type="button"
+                class="table-delete-btn"
+                data-id="${r.id}">
+                Delete
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('')
+    : `
+        <tr class="empty-row">
+          <td colspan="6">No attendance records found.</td>
+        </tr>
+      `;
 }
 
 function renderQR() {
