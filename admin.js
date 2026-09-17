@@ -24,6 +24,41 @@ function msg(t = '', type = 'info') {
   message.textContent = t;
 }
 
+async function logAdminAction({
+  actionType,
+  targetId = null,
+  studentName = null,
+  eventId = null,
+  oldData = null,
+  newData = null
+}) {
+  const {
+    data: { user }
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    console.error('Cannot create action log: no authenticated user.');
+    return;
+  }
+
+  const { error } = await supabase
+    .from('admin_action_logs')
+    .insert({
+      admin_id: user.id,
+      action_type: actionType,
+      target_type: 'attendance',
+      target_id: targetId,
+      student_name: studentName,
+      event_id: eventId,
+      old_data: oldData,
+      new_data: newData
+    });
+
+  if (error) {
+    console.error('Action log error:', error);
+  }
+}
+
 if (!ready) {
   msg('Setup required: configure Supabase in config.js.', 'error');
 } else {
