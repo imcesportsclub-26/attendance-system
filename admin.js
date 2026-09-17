@@ -190,7 +190,7 @@ function renderQR() {
   $('toggleEventButton').textContent =
     selected.is_open ? 'Close Check-In' : 'Open Check-In';
 }
-
+console.log('Delete button found:', $('deleteEventButton'));
 $('deleteEventButton').addEventListener('click', async () => {
   if (!selected) return;
 
