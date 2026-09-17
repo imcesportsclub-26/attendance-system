@@ -174,6 +174,54 @@ function renderRows() {
       `;
 }
 
+tbody.addEventListener('click', async (e) => {
+  const deleteButton = e.target.closest('.table-delete-btn');
+
+  if (!deleteButton) return;
+
+  const id = deleteButton.dataset.id;
+  const record = rows.find(r => String(r.id) === String(id));
+
+  if (!record) {
+    msg('Attendance record not found.', 'error');
+    return;
+  }
+
+  const confirmed = confirm(
+    `Delete attendance for "${record.student_name}"?\n\n` +
+    `Batch / Intake: ${record.batch_intake}\n` +
+    `Team: ${record.team_name || '—'}\n\n` +
+    `This action cannot be undone.`
+  );
+
+  if (!confirmed) return;
+
+  deleteButton.disabled = true;
+  deleteButton.textContent = 'Deleting...';
+
+  const { error } = await supabase
+    .from('attendance')
+    .delete()
+    .eq('id', record.id);
+
+  if (error) {
+    console.error(error);
+    deleteButton.disabled = false;
+    deleteButton.textContent = 'Delete';
+    msg(`Delete failed: ${error.message}`, 'error');
+    return;
+  }
+
+  rows = rows.filter(r => String(r.id) !== String(record.id));
+
+  renderRows();
+
+  msg(
+    `Attendance deleted successfully: ${record.student_name}`,
+    'success'
+  );
+});
+
 function renderQR() {
   const holder = $('qrCode');
 
