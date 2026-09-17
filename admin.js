@@ -11,6 +11,7 @@ let supabase = null;
 let events = [];
 let rows = [];
 let selected = null;
+let editingAttendance = null;
 
 const ready =
   SUPABASE_URL &&
