@@ -249,6 +249,68 @@ tbody.addEventListener('click', (e) => {
     block: 'center'
   });
 });
+$('attendanceEditForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  if (!editingAttendance) return;
+
+  const name = $('editAttendanceName').value.trim();
+  const batch = $('editAttendanceBatch').value.trim();
+  const team = $('editAttendanceTeam').value.trim();
+
+  if (!name || !batch) {
+    msg('Student Name and Batch / Intake are required.', 'error');
+    return;
+  }
+
+  const saveButton =
+    $('attendanceEditForm').querySelector('button[type="submit"]');
+
+  saveButton.disabled = true;
+  saveButton.textContent = 'Saving...';
+
+  const { error } = await supabase
+    .from('attendance')
+    .update({
+      student_name: name,
+      batch_intake: batch,
+      team_name: team
+    })
+    .eq('id', editingAttendance.id);
+
+  if (error) {
+    console.error(error);
+
+    saveButton.disabled = false;
+    saveButton.textContent = 'Save Changes';
+
+    msg(`Update failed: ${error.message}`, 'error');
+    return;
+  }
+
+  const updatedName = name;
+
+  editingAttendance = null;
+
+  $('attendanceEditSection').hidden = true;
+
+  msg(
+    `Attendance updated successfully: ${updatedName}`,
+    'success'
+  );
+
+  await loadAll();
+});
+
+$('cancelAttendanceEdit').addEventListener('click', () => {
+  editingAttendance = null;
+
+  $('attendanceEditForm').reset();
+  $('attendanceEditSection').hidden = true;
+
+  msg('Attendance editing cancelled.', 'info');
+});
+
 
 function renderQR() {
   const holder = $('qrCode');
